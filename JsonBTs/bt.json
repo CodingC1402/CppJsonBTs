@@ -1,0 +1,57 @@
+{
+    "Children":
+    [
+        {
+            "Type": "Sequence",
+            "Children": [
+                {
+                    "Type": "PrintNode",
+                    "Input": {
+                        "String": "Print 1"
+                    }
+                },
+                {
+                    "Type": "SleepNode",
+                    "Input": {
+                        "Duration": 3
+                    }
+                },
+                {
+                    "Type": "PrintNode",
+                    "Input": {
+                        "String": "Print 2"
+                    }
+                },
+                {
+                    "Type": "FailAt",
+                    "Input": {
+                        "Number": 10
+                    }
+                },
+                {
+                    "Type": "PrintNode",
+                    "Input": {
+                        "String": "Print 3"
+                    }
+                },
+                {
+                    "Type": "Selector",
+                    "Children": [
+                        {
+                            "Type": "FailAt",
+                            "Input": {
+                                "Number": 20
+                            }
+                        },
+                        {
+                            "Type": "PrintNode",
+                            "Input": {
+                                "String": "Print 4"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
