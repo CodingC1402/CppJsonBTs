@@ -2,6 +2,7 @@
     "BlackBoard":
     [
         {
+            "Name": "speed",
             "Type": "double",
             "Value": 5
         }
