@@ -1,4 +1,7 @@
 #include "ServiceNodes.h"
+#include "Macros.h"
+
+using namespace BTField;
 
 Node::State AlwaysFail::Tick()
 {

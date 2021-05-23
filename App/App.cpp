@@ -73,6 +73,12 @@ int main()
 {
     auto tree = BTs::Load("bt.json");
     auto treeClone = tree->Clone();
+    auto bb = tree->GetBlackBoard();
+    std::cout << bb.lock()->GetValue<double>("speed") << std::endl;
+    std::cout << bb.lock()->GetValue<bool>("playerInRange") << std::endl;
+    std::cout << bb.lock()->GetValue<int>("Heart") << std::endl;
+    std::cout << bb.lock()->GetValue<std::string>("text") << std::endl;
+
     std::cout << "Hello World!\n";
     std::string input = "";
     while (input != "quit")

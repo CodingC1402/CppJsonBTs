@@ -6,10 +6,6 @@
 #include <string>
 #include <type_traits>
 
-constexpr auto typeField = "Type";
-constexpr auto inputField = "Input";
-constexpr auto childrenField = "Children";
-
 class Node;
 typedef std::shared_ptr<Node> SNode;
 typedef std::weak_ptr<Node> WNode;

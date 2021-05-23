@@ -1,4 +1,5 @@
 #include "BTs.h"
+#include "Macros.h"
 #include <fstream>
 
 BTs::BTs()
@@ -10,17 +11,23 @@ SBTs BTs::Load(const std::string& path)
 {
 	std::fstream file;
 	file.open(path);
-	nlohmann::json Input;
-	file >> Input;
+	nlohmann::json input;
+	file >> input;
 
 	auto newTree = std::make_shared<BTs>();
-	newTree->_root->Load(Input);
+	newTree->_bb = BlackBoard::Load(input[BTField::blackBoardField]);
+	newTree->_root->Load(input);
 	return newTree;
 }
 
 Node::State BTs::Tick()
 {
 	return _root->Tick();
+}
+
+WBlackBoard BTs::GetBlackBoard()
+{
+	return _bb;
 }
 
 SBTs BTs::Clone()

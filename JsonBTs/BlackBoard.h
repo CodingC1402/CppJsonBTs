@@ -7,12 +7,6 @@
 #include "Macros.h"
 #include "json.hpp"
 
-namespace temp
-{
-	constexpr auto typeField = "Field";
-	constexpr auto valueField = "Value";
-}
-
 class FieldBase;
 template<typename T>
 class Field;
@@ -30,11 +24,11 @@ public:
 		return newField;
 	}
 	template<typename T>
-	inline void SetValue(const T& value) {
+	inline void SetValueTemplate(const T& value) {
 		static_cast<Field<T>*>(this)->SetValue(value);
 	}
 	template<typename T>
-	inline T GetValue() {
+	inline T GetValueTemplate() {
 		return static_cast<Field<T>*>(this)->GetValue();
 	}
 protected:
@@ -48,7 +42,7 @@ class Field : public FieldBase
 {
 	friend class BlackBoard;
 public:
-	inline void SetField(const T& value) {
+	inline void SetValue(const T& value) {
 		_value = value;
 	}
 	inline T GetValue() {
@@ -113,7 +107,7 @@ protected:
 	static inline SField LoadField(nlohmann::json& value)
 	{
 		auto newField = FieldBase::Create<T>();
-		newField->SetValue<T>(value.get<T>());
+		newField->SetValueTemplate<T>(value.get<T>());
 		return newField;
 	}
 	static inline std::unordered_map<std::string, SField(*)(nlohmann::json&)> _createFunction;
@@ -138,11 +132,11 @@ public:
 
 	template<typename T>
 	inline void SetValue(const std::string& name, const T& value) {
-		_fields[name]->SetValue<T>(value);
+		_fields[name]->SetValueTemplate<T>(value);
 	}
 	template<typename T>
-	inline bool GetValue(const std::string& name) {
-		return _fields[name]->GetValue<T>();
+	inline T GetValue(const std::string& name) {
+		return _fields[name]->GetValueTemplate<T>();
 	}
 protected:
 	template<typename T>
