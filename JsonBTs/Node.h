@@ -27,26 +27,31 @@ public:
 	void AssignPtr(WNode ptr);
 
 	virtual void AssignParent(WNode parent);
-	virtual State Tick() = 0;
+	virtual State Tick();
+	virtual SNode Clone();
 	virtual void Load(nlohmann::json& input) = 0;
+	virtual const char* GetType() { return ""; }
 	virtual void OnInterrupted() = 0;
 	virtual ~Node() = default;
 protected:
 	WNode _parent;
 	WNode _this;
+	std::string _type;
 };
 
 class LeafNode : public Node
 {
 public:
 	virtual void CustomLoad(nlohmann::json& input) = 0;
-	void OnInterrupted() override {};
+	void OnInterrupted() override {}
 private:
 	void Load(nlohmann::json& input) override;
 };
+#define LEAF_DEFAULT_CLONE(type) SNode Clone() override {auto newNode = Node::Clone(); auto rawPtr = dynamic_cast<type*>(newNode.get()); *rawPtr = *this; return newNode;}
 
 class BodyNode : public Node
 {
+public:
 protected:
 	SNode CreateChild(const std::string& name);
 	inline static std::string GetCreateString(const std::string typeName) {
@@ -58,6 +63,7 @@ class CompositeNode : public BodyNode
 {
 public:
 	~CompositeNode() override;
+	SNode Clone() override;
 protected:
 	void Load(nlohmann::json& input) override;
 	void OnInterrupted() override;
@@ -68,6 +74,7 @@ protected:
 class DecoratorNode : public BodyNode
 {
 protected:
+	SNode Clone() override;
 	void Load(nlohmann::json& input) override;
 	void OnInterrupted() override;
 protected:
@@ -80,7 +87,7 @@ void* CreateNode()
 	return new T();
 }
 
-#define NODE_REGISTER(type) struct RuntimeConstructor{RuntimeConstructor(){NodeFactory::NodeRegister<type> _temp(#type);}}; inline static RuntimeConstructor _runtimeConstructor
+#define NODE_REGISTER(type) private: const char* GetType() override { return #type; } struct RuntimeConstructor{RuntimeConstructor(){NodeFactory::NodeRegister<type> _temp(#type);}}; inline static RuntimeConstructor _runtimeConstructor
 class NodeFactory
 {
 public:
@@ -95,18 +102,11 @@ public:
 		static_assert(std::is_base_of<Node, T>::value, "You are registering a class that doesn't inherited from Node");
 	};
 public:
-	inline static Node* Create(const std::string& name);
+	inline static std::shared_ptr<Node> Create(const std::string& name);
 protected:
 	template<typename T>
 	inline static void Register(const char* name);
 	inline static std::unordered_map<std::string, void* (*)()> _functions;
-
-private:
-	struct RuntimeConstructor
-	{
-		void DecoyFunction();
-	};
-	inline static RuntimeConstructor _runTimeConstructor;
 };
 
 template<typename T>

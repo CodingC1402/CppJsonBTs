@@ -17,10 +17,18 @@
                     }
                 },
                 {
-                    "Type": "PrintNode",
+                    "Type": "Loop",
                     "Input": {
-                        "String": "Print 2"
-                    }
+                        "LoopTime": 3
+                    },
+                    "Children": [
+                        {
+                            "Type": "PrintNode",
+                            "Input": {
+                                "String": "Print 2"
+                            }
+                        }
+                    ]
                 },
                 {
                     "Type": "PrintNode",
@@ -29,13 +37,18 @@
                     }
                 },
                 {
-                    "Type": "Paralel",
+                    "Type": "Selector",
                     "Children": [
                         {
-                            "Type": "FailAt",
-                            "Input": {
-                                "Number": 3
-                            }
+                            "Type": "AlwaysSuccess",
+                            "Children": [
+                                {
+                                    "Type": "FailAt",
+                                    "Input": {
+                                        "Number": 3
+                                    }
+                                }
+                            ]
                         },
                         {
                             "Type": "PrintNode",

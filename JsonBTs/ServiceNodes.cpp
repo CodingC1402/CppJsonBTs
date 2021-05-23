@@ -2,13 +2,15 @@
 
 Node::State AlwaysFail::Tick()
 {
-    _child->Tick();
+    if (_child->Tick() == Node::State::Running)
+        return Node::State::Running;
     return Node::State::Failure;
 }
 
 Node::State AlwaysSuccess::Tick()
 {
-    _child->Tick();
+    if (_child->Tick() == Node::State::Running)
+        return Node::State::Running;
     return Node::State::Success;
 }
 
@@ -46,4 +48,18 @@ Node::State Loop::Tick()
         _currentLoop = 0;
         return _result;
     }
+    return Node::State::Running;
+}
+
+SNode Loop::Clone()
+{
+    auto clone = DecoratorNode::Clone();
+    auto rawPtr = dynamic_cast<Loop*>(clone.get());
+    rawPtr->_loopTime = _loopTime;
+    return clone;
+}
+
+void Loop::LoadInput(nlohmann::json& input)
+{
+    _loopTime = input["LoopTime"].get<unsigned>();
 }

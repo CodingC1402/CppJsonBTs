@@ -3,20 +3,19 @@
 
 BTs::BTs()
 {
-	_root = std::make_shared<RootNode>();
-	_root->AssignPtr(_root);
+	_root = NodeFactory::Create("Root");
 }
 
-void BTs::Load(const std::string& path)
+SBTs BTs::Load(const std::string& path)
 {
 	std::fstream file;
 	file.open(path);
 	nlohmann::json Input;
 	file >> Input;
 
-	_root.reset(new RootNode());
-	_root->AssignPtr(_root);
-	_root->Load(Input);
+	auto newTree = std::make_shared<BTs>();
+	newTree->_root->Load(Input);
+	return newTree;
 }
 
 Node::State BTs::Tick()
@@ -24,7 +23,14 @@ Node::State BTs::Tick()
 	return _root->Tick();
 }
 
-Node::State RootNode::Tick()
+SBTs BTs::Clone()
+{
+	auto newTree = std::make_shared<BTs>();
+	newTree->_root = _root->Clone();
+	return newTree;
+}
+
+Node::State Root::Tick()
 {
 	return _child->Tick();
 }

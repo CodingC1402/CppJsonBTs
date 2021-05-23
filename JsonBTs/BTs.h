@@ -1,19 +1,27 @@
 #pragma once
 #include "Node.h"
+#include "BlackBoard.h"
 
-class RootNode : public DecoratorNode
+class Root : public DecoratorNode
 {
 public:
 	Node::State Tick() override;
+private:
+	NODE_REGISTER(Root);
 };
 
+class BTs;
+typedef std::shared_ptr<BTs> SBTs;
+typedef std::weak_ptr<BTs> WBTs;
 class BTs
 {
 public:
+	static SBTs Load(const std::string& path);
 	BTs();
-	void Load(const std::string& path);
 	Node::State Tick();
+	SBTs Clone();
 protected:
 	SNode _root;
 };
+
 

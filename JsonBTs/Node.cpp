@@ -2,10 +2,24 @@
 #include "SelectorNode.h"
 #include "ParalelNode.h"
 #include "SequenceNode.h"
+#include "ServiceNodes.h"
 
 CompositeNode::~CompositeNode()
 {
 	_children.clear();
+}
+
+SNode CompositeNode::Clone()
+{
+	auto newNode = Node::Clone();
+	auto newNodeRawPtr = dynamic_cast<CompositeNode*>(newNode.get());
+	for (const auto& child : _children)
+	{
+		auto childClone = child->Clone();
+		childClone->AssignParent(newNode);
+		newNodeRawPtr->_children.push_back(childClone);
+	}
+	return newNode;
 }
 
 void CompositeNode::Load(nlohmann::json& input)
@@ -27,9 +41,22 @@ void CompositeNode::OnInterrupted()
 		child->OnInterrupted();
 }
 
-Node* NodeFactory::Create(const std::string& name)
+std::shared_ptr<Node> NodeFactory::Create(const std::string& name)
 {
-	return static_cast<Node*>((*_functions[name])());
+	auto newNode = SNode(static_cast<Node*>((*_functions[name])()));
+	newNode->AssignPtr(newNode);
+	return newNode;
+}
+
+SNode DecoratorNode::Clone()
+{
+	auto newNode = Node::Clone();
+	auto newNodeRawPtr = dynamic_cast<DecoratorNode*>(newNode.get());
+
+	auto childClone = _child->Clone();
+	childClone->AssignParent(newNode);
+	newNodeRawPtr->_child = childClone;
+	return newNode;
 }
 
 void DecoratorNode::Load(nlohmann::json& input)
@@ -51,8 +78,7 @@ void Node::AssignPtr(WNode ptr)
 
 SNode BodyNode::CreateChild(const std::string& name)
 {
-	SNode newChild(NodeFactory::Create(name));
-	newChild->AssignPtr(newChild);
+	SNode newChild = NodeFactory::Create(name);
 	newChild->AssignParent(_this);
 	return newChild;
 }
@@ -62,17 +88,19 @@ void Node::AssignParent(WNode parent)
 	_parent = parent;
 }
 
+Node::State Node::Tick()
+{
+	return Node::State::Success;
+}
+
+SNode Node::Clone()
+{
+	SNode newNode;
+	newNode = NodeFactory::Create(GetType());
+	return newNode;
+}
+
 void LeafNode::Load(nlohmann::json& input)
 {
 	CustomLoad(input[inputField]);
-}
-
-void NodeFactory::RuntimeConstructor::DecoyFunction()
-{
-	Node* _temp = new Paralel();
-	delete _temp;
-	_temp = new Selector();
-	delete _temp;
-	_temp = new Sequence();
-	delete _temp;
 }

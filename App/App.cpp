@@ -16,6 +16,7 @@ public:
         std::cout << _output << std::endl;
         return Node::State::Success;
     }
+    LEAF_DEFAULT_CLONE(PrintNode);
 protected:
     std::string _output;
 private:
@@ -34,6 +35,7 @@ public:
         std::cout << "Awake" << std::endl;
         return Node::State::Success;
     }
+    LEAF_DEFAULT_CLONE(SleepNode);
 protected:
     std::chrono::duration<float> _duration;
 private:
@@ -59,6 +61,7 @@ public:
         }
         return Node::State::Running;
     }
+    LEAF_DEFAULT_CLONE(FailAt);
 protected:
     int loopTime;
     int loop;
@@ -68,13 +71,13 @@ private:
 
 int main()
 {
-    BTs tree;
-    tree.Load("bt.json");
+    auto tree = BTs::Load("bt.json");
+    auto treeClone = tree->Clone();
     std::cout << "Hello World!\n";
     std::string input = "";
     while (input != "quit")
     {
-        switch (tree.Tick())
+        switch (treeClone->Tick())
         {
         case Node::State::Failure:
             std::cout << "Failure\n";
