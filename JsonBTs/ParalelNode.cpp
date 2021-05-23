@@ -1,6 +1,6 @@
 #include "ParalelNode.h"
 
-Node::State ParalelNode::Tick()
+Node::State Paralel::Tick()
 {
     if (_runningNodes.empty())
     {
@@ -10,11 +10,14 @@ Node::State ParalelNode::Tick()
     }
 
     State result;
-    for (auto it = _runningNodes.begin(); it != _runningNodes.end(); ++it)
+    for (auto it = _runningNodes.begin(); it != _runningNodes.end();)
     {
         result = (*it).lock()->Tick();
         switch (result)
         {
+        case State::Running:
+            ++it;
+            break;
         case State::Failure:
             _tickResult = State::Failure;
             [[fallthrough]];

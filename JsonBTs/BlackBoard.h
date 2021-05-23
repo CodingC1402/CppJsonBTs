@@ -21,7 +21,7 @@ public:
 	template<typename T>
 	void SetValue(const std::string& name, const T& value);
 	template<typename T>
-	T GetValue(const std::string& name);
+	T& GetValue(const std::string& name);
 protected:
 	std::unordered_map<std::string, std::shared_ptr<BlackBoard::FieldBase>> _fields;
 };
@@ -34,6 +34,31 @@ class Field : public BlackBoard::FieldBase
 public:
 	void SetValue(const T& value);
 };
+
+template<typename T>
+inline bool operator== (const SField& ptr, const T& value) {
+	return dynamic_cast<T>(ptr.get()) == value;
+}
+template<typename T>
+inline bool operator!= (const SField& ptr, const T& value) {
+	return dynamic_cast<T>(ptr.get()) != value;
+}
+template<typename T>
+inline bool operator>  (const SField& ptr, const T& value) {
+	return dynamic_cast<T>(ptr.get()) > value;
+}
+template<typename T>
+inline bool operator<  (const SField& ptr, const T& value) {
+	return dynamic_cast<T>(ptr.get()) < value;
+}
+template<typename T>
+inline bool operator>= (const SField& ptr, const T& value) {
+	return dynamic_cast<T>(ptr.get()) >= value;
+}
+template<typename T>
+inline bool operator<= (const SField& ptr, const T& value) {
+	return dynamic_cast<T>(ptr.get()) <= value;
+}
 
 template<typename T>
 inline void Field<T>::SetValue(const T& value)
@@ -57,7 +82,7 @@ inline void BlackBoard::SetValue(const std::string& name, const T& value)
 }
 
 template<typename T>
-inline T BlackBoard::GetValue(const std::string& name)
+inline T& BlackBoard::GetValue(const std::string& name)
 {
 	return _fields[name];
 }

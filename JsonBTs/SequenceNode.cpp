@@ -1,6 +1,6 @@
 #include "SequenceNode.h"
 
-Node::State SequenceNode::Tick()
+Node::State Sequence::Tick()
 {
     State result = _children[_runningNode]->Tick();
     switch (result)

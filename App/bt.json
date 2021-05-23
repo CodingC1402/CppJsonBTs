@@ -23,30 +23,30 @@
                     }
                 },
                 {
-                    "Type": "FailAt",
-                    "Input": {
-                        "Number": 10
-                    }
-                },
-                {
                     "Type": "PrintNode",
                     "Input": {
                         "String": "Print 3"
                     }
                 },
                 {
-                    "Type": "Selector",
+                    "Type": "Paralel",
                     "Children": [
                         {
                             "Type": "FailAt",
                             "Input": {
-                                "Number": 20
+                                "Number": 3
                             }
                         },
                         {
                             "Type": "PrintNode",
                             "Input": {
                                 "String": "Print 4"
+                            }
+                        },
+                        {
+                            "Type": "FailAt",
+                            "Input": {
+                                "Number": 4
                             }
                         }
                     ]

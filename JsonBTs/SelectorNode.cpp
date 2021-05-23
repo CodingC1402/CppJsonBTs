@@ -1,6 +1,6 @@
 #include "SelectorNode.h"
 
-Node::State SelectorNode::Tick()
+Node::State Selector::Tick()
 {
     State result = _children[_runningNode]->Tick();
     switch (result) 

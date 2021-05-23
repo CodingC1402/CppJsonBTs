@@ -21,13 +21,13 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{78e3f124-001f-41da-9de4-8c97259413bf}</ProjectGuid>
-    <RootNamespace>JsonBTs</RootNamespace>
+    <ProjectGuid>{bbe7c7ea-69b9-4400-8ecf-75344ce41f61}</ProjectGuid>
+    <RootNamespace>App</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -72,6 +72,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>F:\Programming\SmallProjects\JsonBTs\JsonBTs;$(IncludePath)</IncludePath>
+    <LibraryPath>F:\Programming\SmallProjects\JsonBTs\Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -94,6 +96,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>JsonBTs.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -141,25 +144,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BlackBoard.cpp" />
-    <ClCompile Include="BTs.cpp" />
-    <ClCompile Include="Condition.cpp" />
-    <ClCompile Include="Node.cpp" />
-    <ClCompile Include="ParalelNode.cpp" />
-    <ClCompile Include="SelectorNode.cpp" />
-    <ClCompile Include="SequenceNode.cpp" />
-    <ClCompile Include="ServiceNodes.cpp" />
+    <ClCompile Include="App.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BlackBoard.h" />
-    <ClInclude Include="BTs.h" />
-    <ClInclude Include="Condition.h" />
-    <ClInclude Include="json.hpp" />
-    <ClInclude Include="Node.h" />
-    <ClInclude Include="ParalelNode.h" />
-    <ClInclude Include="SelectorNode.h" />
-    <ClInclude Include="SequenceNode.h" />
-    <ClInclude Include="ServiceNodes.h" />
+    <ProjectReference Include="..\JsonBTs\JsonBTs.vcxproj">
+      <Project>{78e3f124-001f-41da-9de4-8c97259413bf}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

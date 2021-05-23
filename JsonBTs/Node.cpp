@@ -1,5 +1,7 @@
 #include "Node.h"
-#include "NodeFactory.h"
+#include "SelectorNode.h"
+#include "ParalelNode.h"
+#include "SequenceNode.h"
 
 CompositeNode::~CompositeNode()
 {
@@ -19,6 +21,12 @@ void CompositeNode::Load(nlohmann::json& input)
 	}
 }
 
+void CompositeNode::OnInterrupted()
+{
+	for (const auto& child : _children)
+		child->OnInterrupted();
+}
+
 Node* NodeFactory::Create(const std::string& name)
 {
 	return static_cast<Node*>((*_functions[name])());
@@ -29,6 +37,11 @@ void DecoratorNode::Load(nlohmann::json& input)
 	auto childInfo = input[childrenField].begin().value();
 	_child = CreateChild(GetCreateString(childInfo[typeField].get<std::string>()));
 	_child->Load(childInfo);
+}
+
+void DecoratorNode::OnInterrupted()
+{
+	_child->OnInterrupted();
 }
 
 void Node::AssignPtr(WNode ptr)
@@ -52,4 +65,14 @@ void Node::AssignParent(WNode parent)
 void LeafNode::Load(nlohmann::json& input)
 {
 	CustomLoad(input[inputField]);
+}
+
+void NodeFactory::RuntimeConstructor::DecoyFunction()
+{
+	Node* _temp = new Paralel();
+	delete _temp;
+	_temp = new Selector();
+	delete _temp;
+	_temp = new Sequence();
+	delete _temp;
 }

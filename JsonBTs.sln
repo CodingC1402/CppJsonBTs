@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.31229.75
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "JsonBTs", "JsonBTs\JsonBTs.vcxproj", "{78E3F124-001F-41DA-9DE4-8C97259413BF}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "App", "App\App.vcxproj", "{BBE7C7EA-69B9-4400-8ECF-75344CE41F61}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{78E3F124-001F-41DA-9DE4-8C97259413BF}.Release|x64.Build.0 = Release|x64
 		{78E3F124-001F-41DA-9DE4-8C97259413BF}.Release|x86.ActiveCfg = Release|Win32
 		{78E3F124-001F-41DA-9DE4-8C97259413BF}.Release|x86.Build.0 = Release|Win32
+		{BBE7C7EA-69B9-4400-8ECF-75344CE41F61}.Debug|x64.ActiveCfg = Debug|x64
+		{BBE7C7EA-69B9-4400-8ECF-75344CE41F61}.Debug|x64.Build.0 = Debug|x64
+		{BBE7C7EA-69B9-4400-8ECF-75344CE41F61}.Debug|x86.ActiveCfg = Debug|Win32
+		{BBE7C7EA-69B9-4400-8ECF-75344CE41F61}.Debug|x86.Build.0 = Debug|Win32
+		{BBE7C7EA-69B9-4400-8ECF-75344CE41F61}.Release|x64.ActiveCfg = Release|x64
+		{BBE7C7EA-69B9-4400-8ECF-75344CE41F61}.Release|x64.Build.0 = Release|x64
+		{BBE7C7EA-69B9-4400-8ECF-75344CE41F61}.Release|x86.ActiveCfg = Release|Win32
+		{BBE7C7EA-69B9-4400-8ECF-75344CE41F61}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

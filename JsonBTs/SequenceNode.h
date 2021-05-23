@@ -1,13 +1,13 @@
 #pragma once
 #include "Node.h"
 
-class SequenceNode : public CompositeNode
+class Sequence : public CompositeNode
 {
 public:
 	State Tick() override;
 protected:
 	int _runningNode = 0;
 private:
-	NODE_REGISTER(SelectorNode);
+	NODE_REGISTER(Sequence);
 };
 
