@@ -155,6 +155,7 @@
     <ClInclude Include="BTs.h" />
     <ClInclude Include="Condition.h" />
     <ClInclude Include="json.hpp" />
+    <ClInclude Include="Macros.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="ParalelNode.h" />
     <ClInclude Include="SelectorNode.h" />

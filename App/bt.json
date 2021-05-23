@@ -1,4 +1,11 @@
 {
+    "BlackBoard":
+    [
+        {
+            "Type": "double",
+            "Value": 5
+        }
+    ],
     "Children":
     [
         {

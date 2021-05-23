@@ -1,6 +1,6 @@
 #include "BlackBoard.h"
 
-void BlackBoard::FieldBase::SetValue(std::shared_ptr<FieldBase>& field)
+void FieldBase::AssignPtr(const std::weak_ptr<FieldBase>& ptr)
 {
-	*this = *field.get();
+	_this = ptr;
 }
