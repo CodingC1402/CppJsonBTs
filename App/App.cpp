@@ -74,6 +74,8 @@ int main()
     auto tree = BTs::Load("bt.json");
     auto treeClone = tree->Clone();
     auto bb = tree->GetBlackBoard();
+    bb.lock()->SetValue<double>("speed", 1.5);
+    bb.lock()->SetValue<std::string>("text", "HI thereererererererereeeeeeeeee");
     std::cout << bb.lock()->GetValue<double>("speed") << std::endl;
     std::cout << bb.lock()->GetValue<bool>("playerInRange") << std::endl;
     std::cout << bb.lock()->GetValue<int>("Heart") << std::endl;
