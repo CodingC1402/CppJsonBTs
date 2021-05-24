@@ -20,8 +20,9 @@ public:
 		auto cloneNode = std::dynamic_pointer_cast<Condition<T>>(DecoratorNode::Clone(tree));
 		cloneNode->_compareFunction = _compareFunction;
 		cloneNode->_value = _value;
+		cloneNode->_isTrue = _isTrue;
 		cloneNode->_field = std::dynamic_pointer_cast<Field<T>>(tree.lock()->GetBlackBoard().lock()->GetField<T>(_field.lock()->GetFieldName()).lock());
-		cloneNode->_field.lock()->Subscribe(this);
+		cloneNode->_field.lock()->Subscribe(cloneNode.get());
 		return cloneNode;
 	}
 	inline void Load(nlohmann::json& input, WBTs tree) override {
@@ -49,24 +50,32 @@ public:
 		_value = input[BTField::inputField][BTField::valueField].get<T>();
 		_field = std::dynamic_pointer_cast<Field<T>>(tree.lock()->GetBlackBoard().lock()->GetField<T>(input[BTField::inputField][BTField::fieldField].get<std::string>()).lock());
 		_field.lock()->Subscribe(this);
+		_isTrue = (*_compareFunction)(_field.lock(), _value);
 		DecoratorNode::Load(input, tree);
 	}
 	inline void OnChange() override {
-		if (isRunning)
+		_isTrue = (*_compareFunction)(_field.lock(), _value);
+		if (_isRunning && !_isTrue)
 		{
 			OnInterrupted();
-			isRunning = false;
+			_isRunning = false;
 		}
 	}
 	inline Node::State Tick() override {
-		if ((*_compareFunction)(_field.lock(), _value)) {
+		if (_isTrue) {
 			auto result = _child->Tick();
-			if (result == State::Running)
-				isRunning = true;
-			else
-				isRunning = false;
+			if (result == State::Running) {
+				_isRunning = true;
+				_runningNode = _child;
+			}
+			else {
+				_isRunning = false;
+				_runningNode.reset();
+			}
 			return result;
 		}
+		else
+			return State::Failure;
 	}
 protected:
 	inline static bool CompareGreater(std::shared_ptr<Field<T>> field, T value) {
@@ -90,7 +99,8 @@ protected:
 protected:
 	bool (*_compareFunction)(std::shared_ptr<Field<T>>, T);
 
-	bool isRunning = false;
+	bool _isTrue = false;
+	bool _isRunning = false;
 	std::weak_ptr<Field<T>> _field;
 	T _value;
 

@@ -30,9 +30,9 @@
                 {
                     "Type": "DoubleCon",
                     "Input": {
-                        "Type": "Greater",
+                        "Type": "GreaterOrEqual",
                         "Field": "speed",
-                        "Value": 1
+                        "Value": 5
                     },
                     "Children": [
                         {
@@ -50,16 +50,51 @@
                     }
                 },
                 {
-                    "Type": "Loop",
+                    "Type": "StringCon",
                     "Input": {
-                        "LoopTime": 3
+                        "Type": "NonEqual",
+                        "Field": "text",
+                        "Value": "haha"
                     },
                     "Children": [
                         {
-                            "Type": "PrintNode",
+                            "Type": "Loop",
                             "Input": {
-                                "String": "Print 2"
-                            }
+                                "LoopTime": 3
+                            },
+                            "Children": [
+                                {
+                                    "Type": "Loop",
+                                    "Input": {
+                                        "LoopTime": 2
+                                    },
+                                    "Children": [
+                                        {
+                                            "Type": "Sequence",
+                                            "Children":[
+                                                {
+                                                    "Type": "PrintNode",
+                                                    "Input": {
+                                                        "String": "Print 2"
+                                                    }
+                                                },
+                                                {
+                                                    "Type": "PrintNode",
+                                                    "Input": {
+                                                        "String": "Looped"
+                                                    }
+                                                },
+                                                {
+                                                    "Type": "FailAt",
+                                                    "Input": {
+                                                        "Number": 3
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
                         }
                     ]
                 },

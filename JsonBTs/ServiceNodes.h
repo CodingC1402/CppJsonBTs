@@ -48,8 +48,3 @@ public:
 private:
 	NODE_REGISTER(Loop);
 };
-
-class Comparator : public DecoratorNode
-{
-
-};

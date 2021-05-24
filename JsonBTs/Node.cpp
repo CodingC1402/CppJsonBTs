@@ -86,7 +86,8 @@ void Node::AssignTree(WBTs tree)
 
 void BodyNode::OnInterrupted()
 {
-	_runningNode.lock()->OnInterrupted();
+	if (!_runningNode.expired())
+		_runningNode.lock()->OnInterrupted();
 }
 
 SNode BodyNode::CreateChild(const std::string& name)

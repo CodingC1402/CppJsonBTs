@@ -61,6 +61,9 @@ public:
         }
         return Node::State::Running;
     }
+    void OnInterrupted() override {
+        std::cout << "interrupted at " << loop << "/" << loopTime << std::endl;
+    }
     LEAF_DEFAULT_CLONE(FailAt);
 protected:
     int loopTime;
@@ -73,13 +76,7 @@ int main()
 {
     auto tree = BTs::Load("bt.json");
     auto treeClone = tree->Clone();
-    auto bb = tree->GetBlackBoard();
-    bb.lock()->SetValue<double>("speed", 1.5);
-    bb.lock()->SetValue<std::string>("text", "HI thereererererererereeeeeeeeee");
-    std::cout << bb.lock()->GetValue<double>("speed") << std::endl;
-    std::cout << bb.lock()->GetValue<bool>("playerInRange") << std::endl;
-    std::cout << bb.lock()->GetValue<int>("Heart") << std::endl;
-    std::cout << bb.lock()->GetValue<std::string>("text") << std::endl;
+    auto bb = treeClone->GetBlackBoard();
 
     std::cout << "Hello World!\n";
     std::string input = "";
@@ -98,5 +95,9 @@ int main()
             break;
         }
         std::cin >> input;
+        if (input == "0")
+            bb.lock()->SetValue<std::string>("text", "haha");
+        else
+            bb.lock()->SetValue<std::string>("text", "2");
     }
 }
