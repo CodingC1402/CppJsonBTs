@@ -16,6 +16,14 @@ public:
 		NonEqual
 	};
 public:
+	inline SNode Clone(WBTs tree) override {
+		auto cloneNode = std::dynamic_pointer_cast<Condition<T>>(DecoratorNode::Clone(tree));
+		cloneNode->_compareFunction = _compareFunction;
+		cloneNode->_value = _value;
+		cloneNode->_field = std::dynamic_pointer_cast<Field<T>>(tree.lock()->GetBlackBoard().lock()->GetField<T>(_field.lock()->GetFieldName()).lock());
+		cloneNode->_field.lock()->Subscribe(this);
+		return cloneNode;
+	}
 	inline void Load(nlohmann::json& input, WBTs tree) override {
 		switch (_typeStrings[input[BTField::inputField][BTField::typeField].get<std::string>()])
 		{
@@ -39,7 +47,7 @@ public:
 			break;
 		}
 		_value = input[BTField::inputField][BTField::valueField].get<T>();
-		_field = tree.lock()->GetBlackBoard().lock()->GetField<T>(input[BTField::inputField][BTField::fieldField].get<std::string>());
+		_field = std::dynamic_pointer_cast<Field<T>>(tree.lock()->GetBlackBoard().lock()->GetField<T>(input[BTField::inputField][BTField::fieldField].get<std::string>()).lock());
 		_field.lock()->Subscribe(this);
 		DecoratorNode::Load(input, tree);
 	}

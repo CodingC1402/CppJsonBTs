@@ -9,6 +9,7 @@ class Observer
 {
 public:
 	virtual void OnChange() = 0;
+	virtual ~Observer();
 protected:
 	Observable* _oberserving = nullptr;
 };
@@ -16,16 +17,9 @@ protected:
 class Observable
 {
 public:
-	virtual void Subscribe(Observer* observer)
-	{
-		_observers.push_back(observer);
-	}
-	virtual void CallOnChange() {
-		for (const auto& observer : _observers)
-		{
-			observer->OnChange();
-		}
-	}
+	virtual void UnSubscribe(Observer* observer);
+	virtual void Subscribe(Observer* observer);
+	virtual void CallOnChange();
 protected:
 	std::list<Observer*> _observers;
 };

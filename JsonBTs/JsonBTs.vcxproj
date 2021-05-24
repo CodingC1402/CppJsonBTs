@@ -145,6 +145,7 @@
     <ClCompile Include="BTs.cpp" />
     <ClCompile Include="Condition.cpp" />
     <ClCompile Include="Node.cpp" />
+    <ClCompile Include="ObservePattern.cpp" />
     <ClCompile Include="ParalelNode.cpp" />
     <ClCompile Include="SelectorNode.cpp" />
     <ClCompile Include="SequenceNode.cpp" />
