@@ -5,13 +5,14 @@
 #include <unordered_map>
 
 #include "Macros.h"
+#include "ObservePattern.h"
 #include "json.hpp"
 
 class FieldBase;
 template<typename T>
 class Field;
 
-class FieldBase
+class FieldBase : public Observable
 {
 public:
 	void AssignPtr(const std::weak_ptr<FieldBase>& ptr);
@@ -44,6 +45,7 @@ class Field : public FieldBase
 public:
 	inline void SetValue(const T& value) {
 		_value = value;
+		CallOnChange();
 	}
 	inline T GetValue() {
 		return _value;

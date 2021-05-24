@@ -2,6 +2,9 @@
 
 #include <list>
 
+class Observable;
+class Observer;
+
 class Observer
 {
 public:

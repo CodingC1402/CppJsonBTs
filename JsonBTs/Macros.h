@@ -3,6 +3,7 @@
 #define STATIC_CONSTRUCTOR(code) struct STATICCONSTRUCTOR {STATICCONSTRUCTOR(){code}}; static inline STATICCONSTRUCTOR _STATICCONSTRUCTOR;
 namespace BTField
 {
+	constexpr auto fieldField = "Field";
 	constexpr auto typeField = "Type";
 	constexpr auto valueField = "Value";
 	constexpr auto nameField = "Name";

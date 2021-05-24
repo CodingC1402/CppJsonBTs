@@ -1,10 +1,10 @@
 #pragma once
-#include "Node.h"
-#include "BlackBoard.h"
+#include "BTs.h"
 #include "Macros.h"
+#include "ObservePattern.h"
 
 template<typename T>
-class Condition : public DecoratorNode
+class Condition : public DecoratorNode, public Observer
 {
 public:
 	enum class Type {
@@ -39,7 +39,16 @@ public:
 			break;
 		}
 		_value = input[BTField::inputField][BTField::valueField].get<T>();
+		_field = _tree.lock()->GetBlackBoard().lock()->GetField<T>(input[BTField::inputField][BTField::fieldField].get<std::string>());
+		_field.lock()->Subscribe(this);
 		DecoratorNode::Load(input);
+	}
+	inline void OnChange() override {
+		if (isRunning)
+		{
+			OnInterrupted();
+			isRunning = false;
+		}
 	}
 	inline Node::State Tick() override {
 		if ((*_compareFunction)(_field, _value)) {
