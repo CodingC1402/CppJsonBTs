@@ -63,6 +63,7 @@ public:
     }
     void OnInterrupted() override {
         std::cout << "interrupted at " << loop << "/" << loopTime << std::endl;
+        loopTime = 0;
     }
     LEAF_DEFAULT_CLONE(FailAt);
 protected:

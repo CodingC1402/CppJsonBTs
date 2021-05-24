@@ -24,3 +24,9 @@ Node::State Selector::Tick()
         break;
     }
 }
+
+void Selector::OnInterrupted()
+{
+    CompositeNode::OnInterrupted();
+    _runningNodeIndex = 0;
+}

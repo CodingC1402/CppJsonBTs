@@ -89,7 +89,5 @@ void Loop::LoadInput(nlohmann::json& input)
 void Loop::OnInterrupted()
 {
     DecoratorNode::OnInterrupted();
-    _runningNode.reset();
-    _loopTime = 0;
     _currentLoop = 0;
 }
