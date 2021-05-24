@@ -28,7 +28,7 @@
             "Type": "Sequence",
             "Children": [
                 {
-                    "Type": "Condition",
+                    "Type": "DoubleCon",
                     "Input": {
                         "Type": "Greater",
                         "Field": "speed",

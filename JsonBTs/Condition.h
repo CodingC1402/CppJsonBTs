@@ -16,7 +16,7 @@ public:
 		NonEqual
 	};
 public:
-	inline void Load(nlohmann::json& input) override {
+	inline void Load(nlohmann::json& input, WBTs tree) override {
 		switch (_typeStrings[input[BTField::inputField][BTField::typeField].get<std::string>()])
 		{
 		case Type::Greater:
@@ -39,9 +39,9 @@ public:
 			break;
 		}
 		_value = input[BTField::inputField][BTField::valueField].get<T>();
-		_field = _tree.lock()->GetBlackBoard().lock()->GetField<T>(input[BTField::inputField][BTField::fieldField].get<std::string>());
+		_field = tree.lock()->GetBlackBoard().lock()->GetField<T>(input[BTField::inputField][BTField::fieldField].get<std::string>());
 		_field.lock()->Subscribe(this);
-		DecoratorNode::Load(input);
+		DecoratorNode::Load(input, tree);
 	}
 	inline void OnChange() override {
 		if (isRunning)
@@ -51,7 +51,7 @@ public:
 		}
 	}
 	inline Node::State Tick() override {
-		if ((*_compareFunction)(_field, _value)) {
+		if ((*_compareFunction)(_field.lock(), _value)) {
 			auto result = _child->Tick();
 			if (result == State::Running)
 				isRunning = true;
@@ -79,14 +79,6 @@ protected:
 	inline static bool CompareNonEqual(std::shared_ptr<Field<T>> field, T value) {
 		return (*field.get()) != value;
 	}
-	STATIC_CONSTRUCTOR(
-		_typeStrings.emplace("Greater", Type::Greater);
-		_typeStrings.emplace("GreaterOrEqual", Type::GreaterOrEqual);
-		_typeStrings.emplace("Lesser", Type::Lesser);
-		_typeStrings.emplace("LesserOrEqual", Type::LesserOrEqual);
-		_typeStrings.emplace("Equal", Type::Equal);
-		_typeStrings.emplace("NonEqual", Type::NonEqual);
-	)
 protected:
 	bool (*_compareFunction)(std::shared_ptr<Field<T>>, T);
 
@@ -95,4 +87,24 @@ protected:
 	T _value;
 
 	inline static std::unordered_map<std::string, Type> _typeStrings;
+private:
+	STATIC_CONSTRUCTOR(
+		_typeStrings.emplace("Greater", Type::Greater);
+		_typeStrings.emplace("GreaterOrEqual", Type::GreaterOrEqual);
+		_typeStrings.emplace("Lesser", Type::Lesser);
+		_typeStrings.emplace("LesserOrEqual", Type::LesserOrEqual);
+		_typeStrings.emplace("Equal", Type::Equal);
+		_typeStrings.emplace("NonEqual", Type::NonEqual);
+	)
 };
+#define DEFINE_CONDITION_TYPE(nameForType, templateType) class nameForType : public Condition<templateType> {NODE_REGISTER(nameForType);}
+
+DEFINE_CONDITION_TYPE(StringCon, std::string);
+DEFINE_CONDITION_TYPE(CharCon, char);
+DEFINE_CONDITION_TYPE(IntCon, int);
+DEFINE_CONDITION_TYPE(UnsignedCon, unsigned);
+DEFINE_CONDITION_TYPE(FloatCon, float);
+DEFINE_CONDITION_TYPE(DoubleCon, double);
+DEFINE_CONDITION_TYPE(BoolCon, bool);
+DEFINE_CONDITION_TYPE(LongLongCon, long long);
+DEFINE_CONDITION_TYPE(UnsignedLongLongCon, unsigned long long);

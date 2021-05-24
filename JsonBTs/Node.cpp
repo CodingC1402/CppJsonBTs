@@ -3,6 +3,7 @@
 #include "ParalelNode.h"
 #include "SequenceNode.h"
 #include "ServiceNodes.h"
+#include "Condition.h"
 #include "BTs.h"
 #include "Macros.h"
 
@@ -50,6 +51,13 @@ void CompositeNode::OnInterrupted()
 
 std::shared_ptr<Node> NodeFactory::Create(const std::string& name)
 {
+	auto found = _functions.find(name);
+	if (found == _functions.end())
+	{
+		// Change exception later
+		throw std::exception();
+	}
+
 	auto newNode = SNode(static_cast<Node*>((*_functions[name])()));
 	newNode->AssignPtr(newNode);
 	return newNode;

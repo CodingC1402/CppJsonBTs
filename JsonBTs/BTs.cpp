@@ -15,6 +15,7 @@ SBTs BTs::Load(const std::string& path)
 	file >> input;
 
 	auto newTree = std::make_shared<BTs>();
+	newTree->AssignPtr(newTree);
 	newTree->_bb = BlackBoard::Load(input[BTField::blackBoardField]);
 	newTree->_root->Load(input, newTree->_this);
 	return newTree;
