@@ -2,6 +2,16 @@
 #include "Macros.h"
 #include <fstream>
 
+std::string FieldBase::GetFieldName()
+{
+	return _fieldName;
+}
+
+std::string FieldBase::GetFieldType()
+{
+	return _fieldType;
+}
+
 void FieldBase::AssignPtr(const std::weak_ptr<FieldBase>& ptr)
 {
 	_this = ptr;

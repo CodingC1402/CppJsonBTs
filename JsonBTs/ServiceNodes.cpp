@@ -40,11 +40,18 @@ Node::State Loop::Tick()
     if (_currentLoop == 0)
         _result = Node::State::Success;
     
-    if (_child->Tick() == Node::State::Failure)
+    switch (_child->Tick())
     {
+    case Node::State::Failure:
         _result = Node::State::Failure;
+        [[fallthrough]];
+    case Node::State::Success:
+        _runningNode.reset();
+        _currentLoop++;
+        break;
+    case Node::State::Running:
+        _runningNode = _child;
     }
-    _currentLoop++;
 
     if (_currentLoop == _loopTime)
     {
@@ -65,4 +72,9 @@ SNode Loop::Clone(WBTs tree)
 void Loop::LoadInput(nlohmann::json& input)
 {
     _loopTime = input["LoopTime"].get<unsigned>();
+}
+
+void Loop::OnInterrupted()
+{
+    
 }

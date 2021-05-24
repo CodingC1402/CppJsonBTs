@@ -39,6 +39,7 @@ public:
 	Node::State Tick() override;
 	SNode Clone(WBTs tree) override;
 	void LoadInput(nlohmann::json& input) override;
+	void OnInterrupted() override;
 public:
 	unsigned _loopTime = 0;
 	unsigned _currentLoop = 0;

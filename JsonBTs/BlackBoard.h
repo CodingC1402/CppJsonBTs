@@ -19,27 +19,21 @@ class Field;
 class FieldBase : public Observable
 {
 public:
-	inline std::string GetFieldName() {
-		return _fieldName;
-	}
-	inline std::string GetFieldType() {
-		return _fieldType;
-	}
+	std::string GetFieldName();
+	std::string GetFieldType();
 
 	template<typename T>
-	static inline std::shared_ptr<FieldBase> Create(const std::string& name) {
+	static inline std::shared_ptr<FieldBase> Create(const std::string& name, const std::string& type) {
 		std::shared_ptr<FieldBase> newField;
 		newField.reset(new Field<T>());
 		newField->_fieldName = name;
+		newField->_fieldType = type;
 		newField->AssignPtr(newField);
 		return newField;
 	}
 	template<typename T>
-	static inline std::shared_ptr<FieldBase> Create(const std::string& name, const T& value) {
-		std::shared_ptr<FieldBase> newField;
-		newField.reset(new Field<T>());
-		newField->_fieldName = name;
-		newField->AssignPtr(newField);
+	static inline std::shared_ptr<FieldBase> Create(const std::string& name, const std::string& type, const T& value) {
+		std::shared_ptr<FieldBase> newField = FieldBase::Create<T>(name, type);
 		newField->SetValueTemplate<T>(value);
 		return newField;
 	}
@@ -54,9 +48,9 @@ public:
 protected:
 	void AssignPtr(const std::weak_ptr<FieldBase>& ptr);
 protected:
-	static inline std::string _fieldType;
 	std::weak_ptr<FieldBase> _this;
 	std::string _fieldName;
+	std::string _fieldType;
 };
 
 #pragma region Templates
@@ -73,7 +67,7 @@ public:
 		return _value;
 	}
 	inline SField Clone() {
-		return FieldBase::Create<T>(_fieldName, _value);
+		return FieldBase::Create<T>(_fieldName, _fieldType, _value);
 	}
 #pragma region Operators with value
 	inline bool operator== (const T& value) {
@@ -118,23 +112,12 @@ public:
 	}
 #pragma endregion
 
-	static inline void SetTypeName(const std::string& name) {
-		if (_setOnce)
-		{
-			//Change later
-			throw std::exception();
-		}
-		_fieldType = name;
-		_setOnce = true;
-	}
 protected:
 	T _value;
-private:
-	static inline bool _setOnce = false;
 };
 #pragma endregion;
 
-#define FIELD_REGISTER(type) FieldFactory::AddFieldType<type>(#type); Field<type>::SetTypeName(#type)
+#define FIELD_REGISTER(type) FieldFactory::AddFieldType<type>(#type)
 class FieldFactory
 {
 public:
@@ -150,14 +133,15 @@ protected:
 	template<typename T>
 	static inline SField LoadField(nlohmann::json& value)
 	{
-		auto newField = FieldBase::Create<T>(value[BTField::nameField].get<std::string>());
+		auto newField = FieldBase::Create<T>(value[BTField::nameField].get<std::string>(), value[BTField::typeField].get<std::string>());
 		newField->SetValueTemplate<T>(value[BTField::valueField].get<T>());
 		return newField;
 	}
 	template<typename T>
 	static inline SField CloneField(WField toClone)
 	{
-		return std::dynamic_pointer_cast<Field<T>>(toClone.lock())->Clone();
+		auto toCloneUse = std::dynamic_pointer_cast<Field<T>>(toClone.lock());
+		return toCloneUse->Clone();
 	}
 protected:
 	static inline std::unordered_map<std::string, SField(*)(nlohmann::json&)> _createFunction;

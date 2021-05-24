@@ -41,14 +41,6 @@ void CompositeNode::Load(nlohmann::json& input, WBTs tree)
 	}
 }
 
-void CompositeNode::OnInterrupted()
-{
-	for (const auto& child : _children)
-	{
-		child->OnInterrupted();
-	}
-}
-
 std::shared_ptr<Node> NodeFactory::Create(const std::string& name)
 {
 	auto found = _functions.find(name);
@@ -82,11 +74,6 @@ void DecoratorNode::Load(nlohmann::json& input, WBTs tree)
 	_child->Load(childInfo, tree);
 }
 
-void DecoratorNode::OnInterrupted()
-{
-	_child->OnInterrupted();
-}
-
 void Node::AssignPtr(WNode ptr)
 {
 	_this = ptr;
@@ -95,6 +82,11 @@ void Node::AssignPtr(WNode ptr)
 void Node::AssignTree(WBTs tree)
 {
 	_tree = tree;
+}
+
+void BodyNode::OnInterrupted()
+{
+	_runningNode.lock()->OnInterrupted();
 }
 
 SNode BodyNode::CreateChild(const std::string& name)

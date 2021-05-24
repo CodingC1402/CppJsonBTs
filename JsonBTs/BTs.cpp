@@ -39,6 +39,7 @@ WBlackBoard BTs::GetBlackBoard()
 SBTs BTs::Clone()
 {
 	auto newTree = std::make_shared<BTs>();
+	newTree->_bb = _bb->Clone();
 	newTree->_root = _root->Clone(newTree);
 	return newTree;
 }

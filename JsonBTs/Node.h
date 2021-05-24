@@ -53,9 +53,11 @@ private:
 
 class BodyNode : public Node
 {
-public:
 protected:
 	SNode CreateChild(const std::string& name);
+	void OnInterrupted() override;
+protected:
+	WNode _runningNode;
 	inline static std::string GetCreateString(const std::string typeName) {
 		return typeName;
 	}
@@ -68,7 +70,6 @@ public:
 	SNode Clone(WBTs tree) override;
 protected:
 	void Load(nlohmann::json& input, WBTs tree) override;
-	void OnInterrupted() override;
 protected:
 	std::vector<SNode> _children;
 };
@@ -78,7 +79,6 @@ class DecoratorNode : public BodyNode
 protected:
 	SNode Clone(WBTs tree) override;
 	void Load(nlohmann::json& input, WBTs tree) override;
-	void OnInterrupted() override;
 protected:
 	SNode _child;
 };

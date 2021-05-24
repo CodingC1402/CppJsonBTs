@@ -6,7 +6,9 @@ Node::State Paralel::Tick()
     {
         _tickResult = State::Success;
         for (const auto& child : _children)
+        {
             _runningNodes.emplace_back(child);
+        }
     }
 
     State result;
@@ -33,4 +35,11 @@ Node::State Paralel::Tick()
         return _tickResult;
     else
         return State::Running;
+}
+
+void Paralel::OnInterrupted()
+{
+    for (const auto& node : _runningNodes)
+        node.lock()->OnInterrupted();
+    _runningNodes.clear();
 }
