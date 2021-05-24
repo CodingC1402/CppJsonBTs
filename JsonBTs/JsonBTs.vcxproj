@@ -157,6 +157,7 @@
     <ClInclude Include="json.hpp" />
     <ClInclude Include="Macros.h" />
     <ClInclude Include="Node.h" />
+    <ClInclude Include="ObservePattern.h" />
     <ClInclude Include="ParalelNode.h" />
     <ClInclude Include="SelectorNode.h" />
     <ClInclude Include="SequenceNode.h" />

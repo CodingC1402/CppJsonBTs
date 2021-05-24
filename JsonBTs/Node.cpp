@@ -3,6 +3,7 @@
 #include "ParalelNode.h"
 #include "SequenceNode.h"
 #include "ServiceNodes.h"
+#include "BTs.h"
 #include "Macros.h"
 
 using namespace BTField;
@@ -37,13 +38,6 @@ void CompositeNode::Load(nlohmann::json& input, WBTs tree)
 		_children.push_back(newChild);
 		newChild->Load(childInfo, tree);
 	}
-}
-
-void CompositeNode::Load(nlohmann::json& input, WBTs tree)
-{
-	Node::Load(input, tree);
-	for (const auto& child : _children)
-		child->OnInterrupted();
 }
 
 void CompositeNode::OnInterrupted()
