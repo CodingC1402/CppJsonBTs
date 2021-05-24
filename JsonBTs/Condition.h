@@ -38,6 +38,7 @@ public:
 			_compareFunction = &CompareNonEqual;
 			break;
 		}
+		_value = input[BTField::inputField][BTField::valueField].get<T>();
 		DecoratorNode::Load(input);
 	}
 	inline Node::State Tick() override {
@@ -81,7 +82,7 @@ protected:
 	bool (*_compareFunction)(std::shared_ptr<Field<T>>, T);
 
 	bool isRunning = false;
-	std::shared_ptr<Field<T>> _field;
+	std::weak_ptr<Field<T>> _field;
 	T _value;
 
 	inline static std::unordered_map<std::string, Type> _typeStrings;

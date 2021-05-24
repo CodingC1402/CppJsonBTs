@@ -6,7 +6,7 @@ class ServiceNode : public DecoratorNode
 protected:
 	virtual void LoadInput(nlohmann::json& input) {};
 private:
-	void Load(nlohmann::json& input) override;
+	void Load(nlohmann::json& input, WBTs tree) override;
 };
 
 class Reverse : public ServiceNode
@@ -37,7 +37,7 @@ class Loop : public ServiceNode
 {
 public:
 	Node::State Tick() override;
-	SNode Clone() override;
+	SNode Clone(WBTs tree) override;
 	void LoadInput(nlohmann::json& input) override;
 public:
 	unsigned _loopTime = 0;

@@ -6,6 +6,10 @@
 #include <string>
 #include <type_traits>
 
+class BTs;
+typedef std::shared_ptr<BTs> SBTs;
+typedef std::weak_ptr<BTs> WBTs;
+
 class Node;
 typedef std::shared_ptr<Node> SNode;
 typedef std::weak_ptr<Node> WNode;
@@ -21,17 +25,19 @@ public:
 	};
 public:
 	void AssignPtr(WNode ptr);
+	void AssignTree(WBTs tree);
 
 	virtual void AssignParent(WNode parent);
 	virtual State Tick();
-	virtual SNode Clone();
-	virtual void Load(nlohmann::json& input) = 0;
+	virtual SNode Clone(WBTs tree);
+	virtual void Load(nlohmann::json& input, WBTs tree);
 	virtual const char* GetType() { return ""; }
 	virtual void OnInterrupted() = 0;
 	virtual ~Node() = default;
 protected:
 	WNode _parent;
 	WNode _this;
+	WBTs _tree;
 	std::string _type;
 };
 
@@ -41,9 +47,9 @@ public:
 	virtual void CustomLoad(nlohmann::json& input) = 0;
 	void OnInterrupted() override {}
 private:
-	void Load(nlohmann::json& input) override;
+	void Load(nlohmann::json& input, WBTs tree) override;
 };
-#define LEAF_DEFAULT_CLONE(type) SNode Clone() override {auto newNode = Node::Clone(); auto rawPtr = dynamic_cast<type*>(newNode.get()); *rawPtr = *this; return newNode;}
+#define LEAF_DEFAULT_CLONE(type) SNode Clone(WBTs tree) override {auto newNode = Node::Clone(tree); auto rawPtr = dynamic_cast<type*>(newNode.get()); *rawPtr = *this; return newNode;}
 
 class BodyNode : public Node
 {
@@ -59,9 +65,9 @@ class CompositeNode : public BodyNode
 {
 public:
 	~CompositeNode() override;
-	SNode Clone() override;
+	SNode Clone(WBTs tree) override;
 protected:
-	void Load(nlohmann::json& input) override;
+	void Load(nlohmann::json& input, WBTs tree) override;
 	void OnInterrupted() override;
 protected:
 	std::vector<SNode> _children;
@@ -70,8 +76,8 @@ protected:
 class DecoratorNode : public BodyNode
 {
 protected:
-	SNode Clone() override;
-	void Load(nlohmann::json& input) override;
+	SNode Clone(WBTs tree) override;
+	void Load(nlohmann::json& input, WBTs tree) override;
 	void OnInterrupted() override;
 protected:
 	SNode _child;

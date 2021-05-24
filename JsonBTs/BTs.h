@@ -17,13 +17,14 @@ class BTs
 {
 public:
 	static SBTs Load(const std::string& path);
-
+	void AssignPtr(WBTs ptr);
 	BTs();
 	Node::State Tick();
 	WBlackBoard GetBlackBoard();
 	SBTs Clone();
 protected:
 	SBlackBoard _bb;
+	WBTs _this;
 	SNode _root;
 };
 

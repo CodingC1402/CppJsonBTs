@@ -29,9 +29,9 @@ Node::State Reverse::Tick()
     return State::Running;
 }
 
-void ServiceNode::Load(nlohmann::json& input)
+void ServiceNode::Load(nlohmann::json& input, WBTs tree)
 {
-    DecoratorNode::Load(input);
+    DecoratorNode::Load(input, tree);
     LoadInput(input[inputField]);
 }
 
@@ -54,9 +54,9 @@ Node::State Loop::Tick()
     return Node::State::Running;
 }
 
-SNode Loop::Clone()
+SNode Loop::Clone(WBTs tree)
 {
-    auto clone = DecoratorNode::Clone();
+    auto clone = DecoratorNode::Clone(tree);
     auto rawPtr = dynamic_cast<Loop*>(clone.get());
     rawPtr->_loopTime = _loopTime;
     return clone;

@@ -28,10 +28,20 @@
             "Type": "Sequence",
             "Children": [
                 {
-                    "Type": "PrintNode",
+                    "Type": "Condition",
                     "Input": {
-                        "String": "Print 1"
-                    }
+                        "Type": "Greater",
+                        "Field": "speed",
+                        "Value": 1
+                    },
+                    "Children": [
+                        {
+                            "Type": "PrintNode",
+                            "Input": {
+                                "String": "Print 1"
+                            }
+                        }
+                    ]
                 },
                 {
                     "Type": "SleepNode",

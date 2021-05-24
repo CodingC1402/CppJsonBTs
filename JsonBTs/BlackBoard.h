@@ -138,6 +138,10 @@ public:
 	inline T GetValue(const std::string& name) {
 		return _fields[name]->GetValueTemplate<T>();
 	}
+	template<typename T>
+	inline std::weak_ptr<Field<T>> GetField(const std::string& name) {
+		return std::dynamic_pointer_cast<Field<T>>(_fields[name]);
+	}
 protected:
 	template<typename T>
 	inline bool AddField(const std::string& name) {

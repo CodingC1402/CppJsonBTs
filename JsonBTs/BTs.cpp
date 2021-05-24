@@ -16,8 +16,13 @@ SBTs BTs::Load(const std::string& path)
 
 	auto newTree = std::make_shared<BTs>();
 	newTree->_bb = BlackBoard::Load(input[BTField::blackBoardField]);
-	newTree->_root->Load(input);
+	newTree->_root->Load(input, newTree->_this);
 	return newTree;
+}
+
+void BTs::AssignPtr(WBTs ptr)
+{
+	_this = ptr;
 }
 
 Node::State BTs::Tick()
@@ -33,7 +38,7 @@ WBlackBoard BTs::GetBlackBoard()
 SBTs BTs::Clone()
 {
 	auto newTree = std::make_shared<BTs>();
-	newTree->_root = _root->Clone();
+	newTree->_root = _root->Clone(newTree);
 	return newTree;
 }
 

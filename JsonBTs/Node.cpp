@@ -12,21 +12,22 @@ CompositeNode::~CompositeNode()
 	_children.clear();
 }
 
-SNode CompositeNode::Clone()
+SNode CompositeNode::Clone(WBTs tree)
 {
-	auto newNode = Node::Clone();
+	auto newNode = Node::Clone(tree);
 	auto newNodeRawPtr = dynamic_cast<CompositeNode*>(newNode.get());
 	for (const auto& child : _children)
 	{
-		auto childClone = child->Clone();
+		auto childClone = child->Clone(tree);
 		childClone->AssignParent(newNode);
 		newNodeRawPtr->_children.push_back(childClone);
 	}
 	return newNode;
 }
 
-void CompositeNode::Load(nlohmann::json& input)
+void CompositeNode::Load(nlohmann::json& input, WBTs tree)
 {
+	Node::Load(input, tree);
 	SNode newChild;
 	nlohmann::json childInfo;
 	for (auto it = input[childrenField].begin(); it != input[childrenField].end(); ++it)
@@ -34,14 +35,23 @@ void CompositeNode::Load(nlohmann::json& input)
 		childInfo = it.value();
 		newChild = CreateChild(GetCreateString(childInfo[typeField].get<std::string>()));
 		_children.push_back(newChild);
-		newChild->Load(childInfo);
+		newChild->Load(childInfo, tree);
 	}
+}
+
+void CompositeNode::Load(nlohmann::json& input, WBTs tree)
+{
+	Node::Load(input, tree);
+	for (const auto& child : _children)
+		child->OnInterrupted();
 }
 
 void CompositeNode::OnInterrupted()
 {
 	for (const auto& child : _children)
+	{
 		child->OnInterrupted();
+	}
 }
 
 std::shared_ptr<Node> NodeFactory::Create(const std::string& name)
@@ -51,22 +61,23 @@ std::shared_ptr<Node> NodeFactory::Create(const std::string& name)
 	return newNode;
 }
 
-SNode DecoratorNode::Clone()
+SNode DecoratorNode::Clone(WBTs tree)
 {
-	auto newNode = Node::Clone();
+	auto newNode = Node::Clone(tree);
 	auto newNodeRawPtr = dynamic_cast<DecoratorNode*>(newNode.get());
 
-	auto childClone = _child->Clone();
+	auto childClone = _child->Clone(tree);
 	childClone->AssignParent(newNode);
 	newNodeRawPtr->_child = childClone;
 	return newNode;
 }
 
-void DecoratorNode::Load(nlohmann::json& input)
+void DecoratorNode::Load(nlohmann::json& input, WBTs tree)
 {
+	Node::Load(input, tree);
 	auto childInfo = input[childrenField].begin().value();
 	_child = CreateChild(GetCreateString(childInfo[typeField].get<std::string>()));
-	_child->Load(childInfo);
+	_child->Load(childInfo, tree);
 }
 
 void DecoratorNode::OnInterrupted()
@@ -77,6 +88,11 @@ void DecoratorNode::OnInterrupted()
 void Node::AssignPtr(WNode ptr)
 {
 	_this = ptr;
+}
+
+void Node::AssignTree(WBTs tree)
+{
+	_tree = tree;
 }
 
 SNode BodyNode::CreateChild(const std::string& name)
@@ -96,14 +112,21 @@ Node::State Node::Tick()
 	return Node::State::Success;
 }
 
-SNode Node::Clone()
+SNode Node::Clone(WBTs tree)
 {
 	SNode newNode;
 	newNode = NodeFactory::Create(GetType());
+	newNode->AssignTree(tree);
 	return newNode;
 }
 
-void LeafNode::Load(nlohmann::json& input)
+void Node::Load(nlohmann::json& input, WBTs tree)
 {
+	_tree = tree;
+}
+
+void LeafNode::Load(nlohmann::json& input, WBTs tree)
+{
+	Node::Load(input, tree);
 	CustomLoad(input[inputField]);
 }
