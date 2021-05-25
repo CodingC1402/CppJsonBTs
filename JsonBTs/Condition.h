@@ -59,6 +59,7 @@ public:
 		{
 			OnInterrupted();
 			_isRunning = false;
+			_parent.lock()->Tick();
 		}
 	}
 	inline Node::State Tick() override {
