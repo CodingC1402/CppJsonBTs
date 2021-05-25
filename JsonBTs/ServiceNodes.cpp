@@ -63,6 +63,7 @@ Node::State Loop::Tick()
         break;
     case Node::State::Running:
         _runningNode = _child;
+        break;
     }
 
     if (_currentLoop == _loopTime)
@@ -98,6 +99,7 @@ Node::State Wait::Tick()
     {
         _start = std::chrono::system_clock::now();
         _isRunning = true;
+        return Node::State::Running;
     }
     else
     {
@@ -108,14 +110,16 @@ Node::State Wait::Tick()
             auto result = _child->Tick();
             switch (result)
             {
-            case Node::State::Running:
-                _runningNode = _child;
-                break;
             case Node::State::Failure:
                 [[fallthrough]];
             case Node::State::Success:
-                _runningNode.reset();
                 _isRunning = false;
+                _runningNode.reset();
+                break;
+            case Node::State::Running:
+                if (_onceEachTick)
+                    _isRunning = false;
+                _runningNode = _child;
                 break;
             }
             return result;
@@ -130,11 +134,17 @@ SNode Wait::Clone(WBTs tree)
     auto cloneNode = ServiceNode::Clone(tree);
     auto cloneNodeDerived = std::dynamic_pointer_cast<Wait>(cloneNode);
     cloneNodeDerived->_waitMs = _waitMs;
+    cloneNodeDerived->_onceEachTick = _onceEachTick;
+    return cloneNode;
 }
 
 void Wait::LoadInput(nlohmann::json& input)
 {
     _waitMs = input[durationField].get<unsigned>();
+    if (input[oncePerTickField] != nullptr)
+        _onceEachTick = input[oncePerTickField].get<bool>();
+    else
+        _onceEachTick = false;
 }
 
 void Wait::OnInterrupted()

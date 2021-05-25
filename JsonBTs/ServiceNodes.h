@@ -44,6 +44,7 @@ public:
 protected:
 	unsigned _waitMs = 0;
 	bool _isRunning = false;
+	bool _onceEachTick = false;
 	std::chrono::system_clock::time_point _start;
 private:
 	NODE_REGISTER(Wait);

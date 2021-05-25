@@ -11,5 +11,6 @@ namespace BTField
 	constexpr auto childrenField = "Children";
 	constexpr auto blackBoardField = "BlackBoard";
 	constexpr auto durationField = "Duration";
+	constexpr auto oncePerTickField = "OncePerTick";
 	constexpr auto loopField = "Loop";
 }

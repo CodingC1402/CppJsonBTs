@@ -60,13 +60,13 @@
                         {
                             "Type": "Loop",
                             "Input": {
-                                "LoopTime": 3
+                                "Loop": 3
                             },
                             "Children": [
                                 {
                                     "Type": "Loop",
                                     "Input": {
-                                        "LoopTime": 2
+                                        "Loop": 2
                                     },
                                     "Children": [
                                         {
@@ -85,10 +85,19 @@
                                                     }
                                                 },
                                                 {
-                                                    "Type": "FailAt",
+                                                    "Type": "Wait",
                                                     "Input": {
-                                                        "Number": 3
-                                                    }
+                                                        "Duration": 10000,
+                                                        "OncePerTick": true
+                                                    },
+                                                    "Children": [
+                                                        {
+                                                            "Type": "FailAt",
+                                                            "Input": {
+                                                                "Number": 3
+                                                            }
+                                                        }
+                                                    ]
                                                 }
                                             ]
                                         }
