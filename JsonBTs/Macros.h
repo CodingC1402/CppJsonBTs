@@ -10,4 +10,6 @@ namespace BTField
 	constexpr auto inputField = "Input";
 	constexpr auto childrenField = "Children";
 	constexpr auto blackBoardField = "BlackBoard";
+	constexpr auto durationField = "Duration";
+	constexpr auto loopField = "Loop";
 }

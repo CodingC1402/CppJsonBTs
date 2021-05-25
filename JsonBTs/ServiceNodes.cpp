@@ -83,11 +83,62 @@ SNode Loop::Clone(WBTs tree)
 
 void Loop::LoadInput(nlohmann::json& input)
 {
-    _loopTime = input["LoopTime"].get<unsigned>();
+    _loopTime = input[loopField].get<unsigned>();
 }
 
 void Loop::OnInterrupted()
 {
     DecoratorNode::OnInterrupted();
     _currentLoop = 0;
+}
+
+Node::State Wait::Tick()
+{
+    if (!_isRunning)
+    {
+        _start = std::chrono::system_clock::now();
+        _isRunning = true;
+    }
+    else
+    {
+        auto now = std::chrono::system_clock::now();
+        std::chrono::duration<double> timepassed = now - _start;
+        if (timepassed.count() * 1000 >= _waitMs)
+        {
+            auto result = _child->Tick();
+            switch (result)
+            {
+            case Node::State::Running:
+                _runningNode = _child;
+                break;
+            case Node::State::Failure:
+                [[fallthrough]];
+            case Node::State::Success:
+                _runningNode.reset();
+                _isRunning = false;
+                break;
+            }
+            return result;
+        }
+        else
+            return Node::State::Running;
+    }
+}
+
+SNode Wait::Clone(WBTs tree)
+{
+    auto cloneNode = ServiceNode::Clone(tree);
+    auto cloneNodeDerived = std::dynamic_pointer_cast<Wait>(cloneNode);
+    cloneNodeDerived->_waitMs = _waitMs;
+}
+
+void Wait::LoadInput(nlohmann::json& input)
+{
+    _waitMs = input[durationField].get<unsigned>();
+}
+
+void Wait::OnInterrupted()
+{
+    ServiceNode::OnInterrupted();
+    _isRunning = false;
 }

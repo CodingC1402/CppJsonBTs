@@ -1,5 +1,6 @@
 #pragma once
 #include "Node.h"
+#include <chrono>
 
 class ServiceNode : public DecoratorNode
 {
@@ -33,6 +34,21 @@ private:
 	NODE_REGISTER(AlwaysSuccess);
 };
 
+class Wait : public ServiceNode
+{
+public:
+	Node::State Tick() override;
+	SNode Clone(WBTs tree) override;
+	void LoadInput(nlohmann::json& input) override;
+	void OnInterrupted() override;
+protected:
+	unsigned _waitMs = 0;
+	bool _isRunning = false;
+	std::chrono::system_clock::time_point _start;
+private:
+	NODE_REGISTER(Wait);
+};
+
 class Loop : public ServiceNode
 {
 public:
@@ -40,7 +56,7 @@ public:
 	SNode Clone(WBTs tree) override;
 	void LoadInput(nlohmann::json& input) override;
 	void OnInterrupted() override;
-public:
+protected:
 	unsigned _loopTime = 0;
 	unsigned _currentLoop = 0;
 
